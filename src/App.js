@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
 import { connect } from "react-redux";
+import { ageUp, ageDown, ageUpAsync } from "./store/actions/actions";
+import logo from "./logo.svg";
 
 class App extends Component {
   render() {
@@ -11,24 +13,27 @@ class App extends Component {
         </div>
         <button onClick={this.props.onAgeUp}>Age UP</button>
         <button onClick={this.props.onAgeDown}>Age Down</button>
+        <div>
+          {this.props.loading && <img src={logo} alt="" className="App-logo" />}
+        </div>
+        <div>{this.props.asyncActionSuccessState}</div>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    age: state.age
+    age: state.age,
+    loading: state.asyncActionSuccessState === "LOADING",
+    asyncActionSuccessState: state.asyncActionSuccessState,
   };
 };
 
-const mapDispachToProps = dispatch => {
+const mapDispachToProps = (dispatch) => {
   return {
-    onAgeUp: () => dispatch({ type: "AGE_UP", value: 1 }),
-    onAgeDown: () => dispatch({ type: "AGE_DOWN", value: 1 })
+    onAgeUp: () => dispatch(ageUpAsync(1)),
+    onAgeDown: () => dispatch(ageDown(1)),
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispachToProps
-)(App);
+export default connect(mapStateToProps, mapDispachToProps)(App);
